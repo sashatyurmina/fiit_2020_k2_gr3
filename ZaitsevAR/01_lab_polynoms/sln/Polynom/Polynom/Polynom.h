@@ -161,24 +161,23 @@ Polynom Polynom::operator+(const Monom& monom)
 	}
 
 	monoms->Reset();
-	Monom tmp(monom);
-	while (!monoms->IsEnded() && (monoms->GetCurrent()->key < tmp.key))
+	while (!monoms->IsEnded() && (monoms->GetCurrent()->key < monom.key))
 		monoms->Next();
 	if (monoms->IsEnded()) // дошли до конца, и все мономы меньше нового
 	{
-		monoms->InsertEnd(tmp.key, tmp.data);
+		monoms->InsertEnd(monom.key, monom.data);
 		monoms->Reset();
 		return *this;
 	}
-	if (monoms->GetCurrent()->key > tmp.key)
+	if (monoms->GetCurrent()->key > monom.key)
 	{
-		monoms->InsertBefore(monoms->GetCurrent()->key, tmp.key, tmp.data);
+		monoms->InsertBefore(monoms->GetCurrent()->key, monom.key, monom.data);
 	}
-	if (monoms->GetCurrent()->key == tmp.key)
+	if (monoms->GetCurrent()->key == monom.key)
 	{ // прибавляем как подобный
-		if ((monoms->GetCurrent()->data + tmp.data) != 0.0)
+		if ((monoms->GetCurrent()->data + monom.data) != 0.0)
 			monoms->GetCurrent()->data =
-			monoms->GetCurrent()->data + tmp.data;
+			monoms->GetCurrent()->data + monom.data;
 		else
 			monoms->Remove(monoms->GetCurrent()->key);
 	}
