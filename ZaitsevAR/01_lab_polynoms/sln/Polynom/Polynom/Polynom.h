@@ -25,12 +25,12 @@ public:
 	bool operator==(const Polynom& polynom) const;
 
 	Polynom operator+(const Polynom& polynom) const;
-	Polynom operator+(const Monom& monom) const;
+	Polynom operator+(const Monom& monom);
 
 	Polynom operator-() const;
 
 	Polynom operator-(const Polynom& polynom) const;
-	Polynom operator-(const Monom& monom) const;
+	Polynom operator-(const Monom& monom);
 
 	Polynom operator*(const Polynom& polynom) const;
 	Polynom operator*(const Monom& monom) const;
@@ -153,39 +153,37 @@ Polynom& Polynom::operator=(const Polynom& polynom)
 
 // Данный оператор позволяет создавать полиномы отсортированными
 // по возрастанию, а также не имеющих подобных
-Polynom Polynom::operator+(const Monom& monom) const
+Polynom Polynom::operator+(const Monom& monom)
 {
 	if (this->monoms->IsEmpty())
 	{
-		TList<unsigned int, double> tmp;
-		tmp.InsertBegin(monom.key, monom.data);
-		return Polynom(tmp);
+		return Polynom(monom);
 	}
 
-	Polynom result(*this);
-	result.monoms->Reset();
-	while ((!result.monoms->IsEnded()) &&
-		(result.monoms->GetCurrent()->key < monom.key))
-		result.monoms->Next();
-
-	if (result.monoms->IsEnded()) // дошли до конца, и все мономы меньше нового
-		result.monoms->InsertEnd(monom.key, monom.data);
-
-	else if (result.monoms->GetCurrent()->key == monom.key)
+	monoms->Reset();
+	Monom tmp(monom);
+	while (!monoms->IsEnded() && (monoms->GetCurrent()->key < tmp.key))
+		monoms->Next();
+	if (monoms->IsEnded()) // дошли до конца, и все мономы меньше нового
+	{
+		monoms->InsertEnd(tmp.key, tmp.data);
+		monoms->Reset();
+		return *this;
+	}
+	if (monoms->GetCurrent()->key > tmp.key)
+	{
+		monoms->InsertBefore(monoms->GetCurrent()->key, tmp.key, tmp.data);
+	}
+	if (monoms->GetCurrent()->key == tmp.key)
 	{ // прибавляем как подобный
-		if ((result.monoms->GetCurrent()->data + monom.data) != 0.0)
-			result.monoms->GetCurrent()->data =
-			result.monoms->GetCurrent()->data + monom.data;
+		if ((monoms->GetCurrent()->data + tmp.data) != 0.0)
+			monoms->GetCurrent()->data =
+			monoms->GetCurrent()->data + tmp.data;
 		else
-			result.monoms->Remove(result.monoms->GetCurrent()->key);
+			monoms->Remove(monoms->GetCurrent()->key);
 	}
-
-	else if (result.monoms->GetCurrent()->key > monom.key)
-		result.monoms->InsertBefore(result.monoms->GetCurrent()->key,
-			monom.key, monom.data);
-
-	result.monoms->Reset();
-	return result;
+	monoms->Reset();
+	return *this;
 }
 
 Polynom Polynom::operator+(const Polynom& polynom) const
@@ -215,7 +213,7 @@ Polynom Polynom::operator-() const
 	return tmp;
 }
 
-Polynom Polynom::operator-(const Monom& monom) const
+Polynom Polynom::operator-(const Monom& monom)
 {
 	Monom tmp(monom);        // создаём копию монома, так как менять
 	return (*this + (-tmp)); // передаваемый не можем из-за const
