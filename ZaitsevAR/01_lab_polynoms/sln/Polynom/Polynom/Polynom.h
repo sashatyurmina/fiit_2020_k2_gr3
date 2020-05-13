@@ -187,17 +187,53 @@ Polynom Polynom::operator+(const Monom& monom)
 
 Polynom Polynom::operator+(const Polynom& polynom) const
 {
+	Polynom sum;
 	Polynom polynom1(*this);
 	Polynom polynom2(polynom);
 	polynom1.monoms->Reset();
 	polynom2.monoms->Reset();
 
+	while (!polynom1.monoms->IsEnded() && !polynom2.monoms->IsEnded())
+	{
+		Monom m1(*polynom1.monoms->GetCurrent());
+		Monom m2(*polynom2.monoms->GetCurrent());
+		if (m1.key < m2.key)
+		{
+			sum = sum + m1;
+			polynom1.monoms->Next();
+		}
+		else if (m1.key > m2.key)
+		{
+			sum = sum + m2;
+			polynom2.monoms->Next();
+		}
+		else if (m1.key == m2.key)
+		{
+			if (m1.data + m2.data != 0)
+			{
+				Monom sumMonoms = m1 + m2;
+				sum = sum + sumMonoms;
+			}
+			polynom1.monoms->Next();
+			polynom2.monoms->Next();
+		}
+	}
+
+	while (!polynom1.monoms->IsEnded())
+	{
+		Monom m1(*polynom1.monoms->GetCurrent());
+		sum = sum + m1;
+		polynom1.monoms->Next();
+	}
+
 	while (!polynom2.monoms->IsEnded())
 	{
-		polynom1 = polynom1 + (*polynom2.monoms->GetCurrent());
+		Monom m2(*polynom2.monoms->GetCurrent());
+		sum = sum + m2;
 		polynom2.monoms->Next();
 	}
-	return polynom1;
+	sum.monoms->Reset();
+	return sum;
 }
 
 Polynom Polynom::operator-() const
