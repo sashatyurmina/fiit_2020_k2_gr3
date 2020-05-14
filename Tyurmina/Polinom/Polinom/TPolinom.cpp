@@ -1,5 +1,6 @@
 #include "Polinom.h"
 #include <string>
+
 using namespace std;
 
 Polinom::Polinom()
@@ -149,14 +150,13 @@ Polinom::Polinom(const string& str)
 				i++;
 				continue;
 			}
-		}
-		while (!((s[i] == '+') || (s[i] == '-')) && (i != s.length()) && (!_x || !_y || !_z));
+		} while (!((s[i] == '+') || (s[i] == '-')) && (i != s.length()) && (!_x || !_y || !_z));
 		polinom->InsertEnd(degree, coeff);
 		coeff = 1;
 		degree = 0;
 	}
 	Simplification();
-	OrganizeList();
+	OrganizeL();
 }
 
 Polinom::Polinom(const Polinom& tmp)
@@ -175,7 +175,7 @@ Polinom::Polinom(TList<unsigned int, double>* list)
 	}
 	polinom = new TList<unsigned int, double>(*list);
 	Simplification();
-	OrganizeList();
+	OrganizeL();
 }
 
 Polinom::~Polinom()
@@ -225,7 +225,7 @@ Polinom Polinom::operator+(const Polinom& pol)
 		pol.polinom->Next();
 	}
 	result.polinom->Reset();
-	result.OrganizeList();
+	result.OrganizeL();
 	result.Simplification();
 	return result;
 }
@@ -259,7 +259,7 @@ Polinom  Polinom::operator*(const TNode<unsigned int, double>& monom)
 		polinom->Next();
 	}
 	Simplification();
-	OrganizeList();
+	OrganizeL();
 	return result;
 }
 
@@ -280,7 +280,7 @@ Polinom Polinom::operator*(const Polinom& pol)
 		polinom->Next();
 	}
 	result.Simplification();
-	result.OrganizeList();
+	result.OrganizeL();
 	return result;
 }
 
@@ -309,7 +309,7 @@ const Polinom& Polinom::operator=(const Polinom& pol)
 	return *this;
 }
 
-void Polinom::OrganizeList()
+void Polinom::OrganizeL()
 {
 	if ((polinom->GetFirst() == nullptr) || (polinom->GetFirst()->pNext == nullptr))
 		return;
@@ -403,7 +403,7 @@ ostream& operator<<(ostream& out, const Polinom& pol)
 			if (deg_y == 1)
 				out << "y";
 			if (deg_z == 1)
-			out << "z";
+				out << "z";
 			if (deg_x > 0 && deg_x != 1)
 				out << "x^" << deg_x;
 			if (deg_y > 0 && deg_y != 1)
