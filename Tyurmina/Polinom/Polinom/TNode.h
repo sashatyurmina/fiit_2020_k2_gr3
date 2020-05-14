@@ -1,6 +1,6 @@
 #pragma once
-#pragma once
 #include <iostream>
+
 using namespace std;
 
 template<class TKey, class TData>
@@ -10,6 +10,7 @@ public:
 	TKey key;
 	TData* pData;
 	TNode<TKey, TData>* pNext;
+
 	TNode();
 	TNode(const TNode<TKey, TData>&);
 	TNode(TKey, TData*);
