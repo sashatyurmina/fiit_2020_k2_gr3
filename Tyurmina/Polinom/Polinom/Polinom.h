@@ -8,7 +8,7 @@ class Polinom
 {
 private:
 	TList<unsigned int, double>* polinom;
-	void OrganizeList(); 
+	void OrganizeL(); 
 	void Simplification(); 
 public:
 	Polinom();
