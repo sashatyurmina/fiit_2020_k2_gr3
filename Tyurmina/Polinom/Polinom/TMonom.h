@@ -19,5 +19,5 @@ public:
 	bool operator<(const TNode&) const;
 	bool operator!=(const TNode& monom) const;
 	bool operator==(const TNode& monom) const;
-	TNode<unsigned int, double>* operator*(const TNode<unsigned int, double>& monom); //ìîíîì*ìîíîì
+	TNode<unsigned int, double>* operator*(const TNode<unsigned int, double>& monom); 
 };
