@@ -20,7 +20,7 @@ public:
 	Itr(TNode* root1) :
 		st(100)
 	{
-		root = root1;
+		st.Push(root);
 	}
 	bool HasNext()
 	{
@@ -28,63 +28,18 @@ public:
 	}
 	int next()
 	{
-		while (root != NULL)
-		{
-			st.Push(root);
-			root = root->left;
-		}
-		root = st.Top();
+		TNode* curr_t = st.Top();
 		st.Pop();
-		int val = root->value;
-		root = root->right;
-		return val;
+		int value = curr_t->value;
+		if (root->right != NULL)
+			st.Push(root->right);
+		if (root->left != NULL)
+			st.Push(root->left);
+		return value;
 	}
 };
 
-/*class Navigator
-{
-	TNode* root;
-	TStack<TNode*> path;
-public:
-	Navigator(TNode* root1)
-	{
-		root = root1;
-	}
-	bool left()
-	{
-		if (root->left == NULL)
-			return false;
-		path.Push(root);
-		root = root->left;
-		return true;
-	}
-	bool right()
-	{
-		if (root->right == NULL)
-			return false;
-		path.Push(root);
-		root = root->left;
-		return true;
-	}
-	bool up()
-	{
-		if (path.IsEmpty())
-			throw "Path is empty";
-		root = path.Top();
-		path.Pop();
-		return true;
-	}
-};*/
-
-/*void print(TNode* curr_t)
-{
-	if (curr_t == NULL) return;
-	cout << curr_t->value << "";
-	printTLR(curr_t->left);
-	printTLR(curr_t->right);
-}*/
-
-void printTLR(TNode* curr_t)
+/*void printTLR(TNode* curr_t) //TopLeftRight(верх-лево-право) - рек
 {
 	if (curr_t == NULL) return;
 	cout << curr_t->value << "";
@@ -92,13 +47,13 @@ void printTLR(TNode* curr_t)
 	printTLR(curr_t->right);
 }
 
-void printLTR(TNode* curr_t)
+void printLTR(TNode* curr_t) //LeftTopRight(лево-верх-право) -рек
 {
 	if (curr_t == NULL) return;
 	printLTR(curr_t->left);
 	cout << curr_t->value << "";
 	printLTR(curr_t->right);
-}
+}*/
 
 
 void printItrTLR(TNode* root)
@@ -141,58 +96,20 @@ void printItrLTR(TNode* root)
 
 int main()
 {
-	TNode* p1 = new TNode(4);
-	TNode* p2 = new TNode(7);
-	TNode* p3 = new TNode(8);
-	TNode* p4 = new TNode(5, p2, p3);
-	TNode* p5 = new TNode(5, NULL, p3);
-	TNode* p6 = new TNode(2, p1, p5);
+	TNode* p1 = new TNode(4); //лист со значением 4
+	TNode* p2 = new TNode(6); //лист со значением 6
+	TNode* p3 = new TNode(3); //лист со значением 3
+	TNode* p4 = new TNode(5, NULL, p2); //лист со значением 5, лев=0, прав=6
+	TNode* p5 = new TNode(2, p1, p4); //лист со значением 2, лев=4 прав=5
+	TNode* p6 = new TNode(1, p5, p3); //лист со значением 1, лев=2,прав=3
 	TNode* root = p6;
-	/*Navigator n(root);
-	bool f = true;
-	int op;
-	int n = 0;
-	while (true)
-	{
-		cout << "f" << f<< endl;
-		cout << "value" << n.value() << endl;
-		cout << "1.left" << endl;
-		cout << "2.right" << endl;
-		cout << "3.up" << endl;
-		cin >> op;
-		try
-		{
-			if (op == 1)
-				n.left();
-			if (op == 2)
-				n.right();
-			if (op == 3)
-				n.up();
-		}
-		catch (const char*str)
-		{
-			cout << str << endl;
-			f = false;
-		}
-		catch (const char*str)
-		{
-			cout << str << endl;
-			f = false;
-		}
-	}*/
-	cout << "TLR" << endl;
-	printTLR(root);
-	cout << endl;
-	cout << "LTR" << endl;
-	printLTR(root);
-	cout << endl;
-	cout << "Iterator TLR" << endl;
+	
+	cout << "Itr TLR" << endl;
 	printItrTLR(root);
 	cout << endl;
-	cout << "Iterator LTR" << endl;
-	printItrLTR(root);
-	cout << endl;
-	cout << "Iterator LTR2" << endl;
+	cout << "Itr TLR" << endl;
+	printItrTLR(root);
+	cout << "Iterator" << endl;
 	Itr i(root);
 	while (i.HasNext())
 		cout << i.next() << " ";
